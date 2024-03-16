@@ -1,0 +1,48 @@
+# This is a docker-compose file to define services for the operator_service.
+# It is used to define how the operator_service should be built and run.
+# Version 3.1 is required for the depends_on parameter.
+version: '3.1'
+
+# Define the services to run.
+services:
+  # MongoDB service.
+  mongo_db:
+    # Use the official MongoDB image.
+    image: mongo:latest
+    # Name the container mongo_container.
+    container_name: mongo_container
+    # Always restart the container if it stops.
+    restart: always
+    # Map port 27017 in the container to port 27017 on the host.
+    ports:
+      - 27017:27017
+    # Mount volume mongo_db to /data/db in the container.
+    volumes:
+      - mongo_db:/data/db
+    # Add a docstring describing this service.
+    labels:
+      description: 'MongoDB service'
+
+  # Operator service.
+  operator_service:
+    # Build the service from the Dockerfile in the current directory.
+    build: .
+    # Map port 3000 in the container to port 3000 on the host.
+    ports:
+      - 3000:3000
+    # Mount the current directory to /usr/src/app in the container.
+    volumes:
+      - .:/usr/src/app
+    # Set environment variable MONGO_URI to connect to the MongoDB service.
+    environment:
+      - MONGO_URI=mongodb://mongo_db:27017
+    # Add a docstring describing this service.
+    labels:
+      description: 'Operator service'
+    # Depend on the MongoDB service to ensure it is up before starting.
+    depends_on:
+      - mongo_db
+
+# Define a volume mongo_db to persist data.
+volumes:
+  mongo_db: {}
