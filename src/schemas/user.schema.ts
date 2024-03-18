@@ -5,11 +5,14 @@ import mongoose from 'mongoose';
   timestamps: true,
 })
 export class User {
-  @Prop({ required: true })
+  @Prop({ unique: [true, 'Email already exists'] })
   username: string;
 
   @Prop({ default: false })
   isAdmin: boolean;
+
+  @Prop({ enum: ['hotels', 'airlines'], default: 'hotel' })
+  service: string;
 
   @Prop({ unique: [true, 'Email already exists'] })
   email: string;
@@ -24,40 +27,6 @@ export class User {
   hotels: string[];
 
   @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Airline' })
-  airlines: string[];
-}
-
-// Define createUser DTO class
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsArray,
-  IsIn,
-} from 'class-validator';
-
-export class CreateUserDto {
-  @IsNotEmpty()
-  username: string;
-
-  @IsOptional()
-  isAdmin: boolean;
-
-  @IsEmail()
-  email: string;
-
-  @IsNotEmpty()
-  password: string;
-
-  @IsIn(['admin', 'manager', 'staff'])
-  role: string;
-
-  @IsArray()
-  @IsOptional()
-  hotels: string[];
-
-  @IsArray()
-  @IsOptional()
   airlines: string[];
 }
 
