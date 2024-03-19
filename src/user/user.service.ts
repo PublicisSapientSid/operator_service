@@ -5,6 +5,7 @@ import { User } from '../schemas/user.schema';
 import { CreateUserDto } from '../dto/CreateUser.dto';
 import { UpdateUserDto } from '../dto/UpdateUser.dto';
 import { AuthService } from '../auth/auth.service';
+import { AuthDTO } from '../dto/Auth.dto';
 
 @Injectable()
 export class UsersService {
@@ -13,7 +14,7 @@ export class UsersService {
     private authService: AuthService,
   ) {}
 
-  async createUser(user: CreateUserDto): Promise<User> {
+  async register(user: CreateUserDto): Promise<User> {
     const existingUser = await this.userModel.findOne({
       $or: [{ username: user.username }, { email: user.email }],
     });
@@ -24,6 +25,15 @@ export class UsersService {
     user.password = await this.authService.createPasswordHash(user.password);
     const newUser = new this.userModel(user);
     return newUser.save();
+  }
+
+  async signIn(user: AuthDTO): Promise<boolean> {
+    const canUserSignIn = await this.authService.validateAndSignIn(
+      user.username,
+      user.password,
+      this.userModel,
+    );
+    return canUserSignIn;
   }
 
   async findAllUsers(): Promise<User[]> {
@@ -51,6 +61,8 @@ export class UsersService {
     if (!foundUser) {
       throw new HttpException('User not found', 404);
     }
+    if (user.password)
+      user.password = await this.authService.createPasswordHash(user.password);
     user.isAdmin = user.role === 'admin';
     return this.userModel.findByIdAndUpdate(id, user, { new: true });
   }

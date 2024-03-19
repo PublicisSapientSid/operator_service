@@ -7,19 +7,15 @@ import {
   Patch,
   Delete,
 } from '@nestjs/common';
-import { UsersService } from './user.service';
-import { User } from '../schemas/user.schema';
 import { CreateUserDto } from '../dto/CreateUser.dto';
 import { UpdateUserDto } from '../dto/UpdateUser.dto';
+import { AuthDTO } from '../dto/Auth.dto';
+import { UsersService } from './user.service';
+import { User } from '../schemas/user.schema';
 
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
-
-  @Post()
-  async createUser(@Body() user: CreateUserDto): Promise<User> {
-    return this.usersService.createUser(user);
-  }
 
   @Get()
   async findAllUsers(): Promise<User[]> {
@@ -42,5 +38,15 @@ export class UsersController {
   @Delete(':id')
   async deleteUser(@Param('id') id: string): Promise<User> {
     return this.usersService.deleteUser(id);
+  }
+
+  @Post('register')
+  async register(@Body() user: CreateUserDto): Promise<User> {
+    return this.usersService.register(user);
+  }
+
+  @Post('signin')
+  async signIn(@Body() user: AuthDTO): Promise<boolean> {
+    return this.usersService.signIn(user);
   }
 }
