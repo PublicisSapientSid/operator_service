@@ -30,3 +30,6 @@ yarn.lock
 # local env files
 .env
 .env*.local
+
+#dist folder
+dist/
