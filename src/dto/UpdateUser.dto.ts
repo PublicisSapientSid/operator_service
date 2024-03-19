@@ -1,4 +1,11 @@
 import { IsEmail, IsOptional, IsIn } from 'class-validator';
+import {
+  HOTEL_SERVICE,
+  AIRLINE_SERVICE,
+  ADMIN_ROLE,
+  MANAGER_ROLE,
+  STAFF_ROLE,
+} from '../utils/constants';
 
 export class UpdateUserDto {
   @IsOptional()
@@ -7,7 +14,7 @@ export class UpdateUserDto {
   @IsOptional()
   isAdmin?: boolean;
 
-  @IsIn(['hotels', 'airlines'])
+  @IsIn([HOTEL_SERVICE, AIRLINE_SERVICE])
   @IsOptional()
   service?: string;
 
@@ -18,7 +25,7 @@ export class UpdateUserDto {
   @IsOptional()
   password?: string;
 
-  @IsIn(['admin', 'manager', 'staff'])
+  @IsIn([ADMIN_ROLE, MANAGER_ROLE, STAFF_ROLE])
   @IsOptional()
   role?: string;
 }

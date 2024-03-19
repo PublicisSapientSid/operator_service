@@ -1,12 +1,9 @@
 import { Injectable } from '@nestjs/common';
-
+import * as argon from 'argon2';
 @Injectable()
 export class AuthService {
-  signin() {
-    return 'Signin route';
-  }
-
-  signup() {
-    return 'SignUp route';
+  async createPasswordHash(password: string) {
+    const hash = await argon.hash(password);
+    return hash;
   }
 }

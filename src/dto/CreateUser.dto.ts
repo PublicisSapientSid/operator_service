@@ -1,4 +1,11 @@
 import { IsEmail, IsNotEmpty, IsOptional, IsIn } from 'class-validator';
+import {
+  ADMIN_ROLE,
+  AIRLINE_SERVICE,
+  HOTEL_SERVICE,
+  MANAGER_ROLE,
+  STAFF_ROLE,
+} from '../utils/constants';
 
 export class CreateUserDto {
   @IsNotEmpty()
@@ -7,7 +14,7 @@ export class CreateUserDto {
   @IsOptional()
   isAdmin: boolean;
 
-  @IsIn(['hotels', 'airlines'])
+  @IsIn([HOTEL_SERVICE, AIRLINE_SERVICE])
   service: string;
 
   @IsEmail()
@@ -17,7 +24,7 @@ export class CreateUserDto {
   @IsNotEmpty()
   password: string;
 
-  @IsIn(['admin', 'manager', 'staff'])
+  @IsIn([ADMIN_ROLE, MANAGER_ROLE, STAFF_ROLE])
   @IsNotEmpty()
   role: string;
 }

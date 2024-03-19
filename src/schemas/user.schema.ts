@@ -1,17 +1,24 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
+import {
+  ADMIN_ROLE,
+  AIRLINE_SERVICE,
+  HOTEL_SERVICE,
+  MANAGER_ROLE,
+  STAFF_ROLE,
+} from '../utils/constants';
 
 @Schema({
   timestamps: true,
 })
 export class User {
-  @Prop({ unique: [true, 'Email already exists'] })
+  @Prop({ unique: [true, 'Username already exists'] })
   username: string;
 
   @Prop({ default: false })
   isAdmin: boolean;
 
-  @Prop({ enum: ['hotels', 'airlines'], default: 'hotel' })
+  @Prop({ enum: [HOTEL_SERVICE, AIRLINE_SERVICE], default: 'hotel' })
   service: string;
 
   @Prop({ unique: [true, 'Email already exists'] })
@@ -20,7 +27,7 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ enum: ['admin', 'manager', 'staff'], default: 'staff' })
+  @Prop({ enum: [ADMIN_ROLE, MANAGER_ROLE, STAFF_ROLE], default: 'staff' })
   role: string;
 
   @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Hotel' })

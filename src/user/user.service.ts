@@ -4,10 +4,14 @@ import mongoose, { Model } from 'mongoose';
 import { User } from '../schemas/user.schema';
 import { CreateUserDto } from '../dto/CreateUser.dto';
 import { UpdateUserDto } from '../dto/UpdateUser.dto';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private authService: AuthService,
+  ) {}
 
   async createUser(user: CreateUserDto): Promise<User> {
     const existingUser = await this.userModel.findOne({
@@ -17,6 +21,7 @@ export class UsersService {
       throw new ConflictException('Username or email already exists');
     }
     user.isAdmin = user.role === 'admin';
+    user.password = await this.authService.createPasswordHash(user.password);
     const newUser = new this.userModel(user);
     return newUser.save();
   }
@@ -46,6 +51,7 @@ export class UsersService {
     if (!foundUser) {
       throw new HttpException('User not found', 404);
     }
+    user.isAdmin = user.role === 'admin';
     return this.userModel.findByIdAndUpdate(id, user, { new: true });
   }
 
