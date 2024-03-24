@@ -46,7 +46,7 @@ services:
       # Set a secret value for JWT signing.
       JWT_SECRET: operatorservicesecret
       # Set the expiration time for JWTs to 1 day (24 hours).
-      JWT_EXPIRES_IN: 1d
+      JWT_EXPIRES_IN: 15m
     # Add a descriptive label to the container.
     labels:
       description: 'Operator service'

@@ -27,13 +27,13 @@ export class UsersService {
     return newUser.save();
   }
 
-  async signIn(user: AuthDTO): Promise<boolean> {
-    const canUserSignIn = await this.authService.validateAndSignIn(
+  async signIn(user: AuthDTO): Promise<{ access_token: string }> {
+    const accessToken = await this.authService.validateAndSignIn(
       user.username,
       user.password,
       this.userModel,
     );
-    return canUserSignIn;
+    return accessToken;
   }
 
   async findAllUsers(): Promise<User[]> {

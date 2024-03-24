@@ -46,7 +46,7 @@ export class UsersController {
   }
 
   @Post('signin')
-  async signIn(@Body() user: AuthDTO): Promise<boolean> {
+  async signIn(@Body() user: AuthDTO): Promise<{ access_token: string }> {
     return this.usersService.signIn(user);
   }
 }

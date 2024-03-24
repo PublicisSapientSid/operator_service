@@ -7,9 +7,12 @@ import {
 import * as argon from 'argon2';
 import { Model } from 'mongoose';
 import { User } from '../schemas/user.schema';
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
-  async createPasswordHash(password: string) {
+  constructor(private jwt: JwtService) {}
+
+  async createPasswordHash(password: string): Promise<string> {
     const hash = await argon.hash(password);
     return hash;
   }
@@ -18,9 +21,8 @@ export class AuthService {
     username: string,
     password: string,
     userModel: Model<User>,
-  ): Promise<boolean> {
+  ): Promise<{ access_token: string }> {
     const user = await userModel.findOne({ username });
-    console.log('User found', user);
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
@@ -28,8 +30,24 @@ export class AuthService {
     if (!isPasswordValid) {
       throw new ForbiddenException('Invalid credentials');
     }
-    console.log('Password matched', password), user.password;
 
-    return true;
+    return this.signToken(user.id, user.email);
+  }
+
+  async signToken(
+    userId: number,
+    email: string,
+  ): Promise<{ access_token: string }> {
+    const payload = {
+      sub: userId,
+      email,
+    };
+    const token = await this.jwt.signAsync(payload, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+      secret: process.env.JWT_SECRET,
+    });
+    return {
+      access_token: token,
+    };
   }
 }
