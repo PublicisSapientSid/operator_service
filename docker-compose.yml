@@ -1,0 +1,61 @@
+# This is the version of the Compose file format.
+# https://docs.docker.com/compose/compose-file/
+version: '3.1'
+
+# Define and configure services.
+# https://docs.docker.com/compose/compose-file/#service-configuration-reference
+services:
+  # MongoDB service
+  # ------------
+  mongo_db:
+    # Use the MongoDB image from Docker Hub.
+    # https://hub.docker.com/_/mongo/
+    image: mongo:latest
+    # Name of the container.
+    container_name: mongo_container
+    # Automatically restart the container.
+    restart: always
+    # Forward the container port 27017 to the host port 27017.
+    ports:
+      - 27017:27017
+    # Mount the volume `mongo_db` to the container’s `/data/db` directory.
+    volumes:
+      - mongo_db:/data/db
+    # Add a descriptive label to the container.
+    labels:
+      description: 'MongoDB service'
+
+  # Operator service
+  # --------------
+  operator_service:
+    # Build the image from the directory containing this file.
+    build: .
+    # Map port 3000 of the container to port 3000 of the host.
+    ports:
+      - 3000:3000
+    # Mount the current directory to the container’s `/usr/src/app` directory.
+    volumes:
+      - .:/usr/src/app
+    # Set environment variables used by the service.
+    environment:
+      # The MongoDB service is named `mongo_db` in this Compose file.
+      # MongoDB is exposed on port 27017 on the `mongo_db` service.
+      # So, to connect to the MongoDB service from this service,
+      # the URL should be `mongodb://mongo_db:27017/operator`.
+      MONGO_URI: mongodb://mongo_db:27017/operator
+      # Set a secret value for JWT signing.
+      JWT_SECRET: operatorservicesecret
+      # Set the expiration time for JWTs to 1 day (24 hours).
+      JWT_EXPIRES_IN: 15m
+    # Add a descriptive label to the container.
+    labels:
+      description: 'Operator service'
+    # Ensure that the `mongo_db` service is started before this service.
+    depends_on:
+      - mongo_db
+
+# Define named volumes.
+# https://docs.docker.com/compose/compose-file/#volumes
+volumes:
+  # The `mongo_db` volume is used by the `mongo_db` service.
+  mongo_db: {}
