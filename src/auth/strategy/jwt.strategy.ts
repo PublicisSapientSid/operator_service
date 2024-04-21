@@ -13,7 +13,12 @@ export class JWTStrategy extends PassportStrategy(Strategy) {
     @InjectModel(User.name) private userModel: Model<User>,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request) => {
+          const token = request?.authorization;
+          return token.split('Bearer ')[1];
+        },
+      ]),
       secretOrKey: config.get('JWT_SECRET'),
     });
   }
