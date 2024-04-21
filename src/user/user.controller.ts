@@ -36,6 +36,12 @@ export class UsersController {
     return this.usersService.register(user);
   }
 
+  @MessagePattern('coldStart')
+  async coldStartEvent(@Body() user: CreateUserDto) {
+    console.log('MESSAGE USER', { user });
+    return this.usersService.register(user);
+  }
+
   @UseGuards(UserAuthGuard)
   @MessagePattern('update')
   async updateEvent({
