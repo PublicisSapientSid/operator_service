@@ -5,8 +5,6 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 
-console.log({ MONGO_URI: process.env.MONGO_URI });
-
 @Module({
   imports: [
     ConfigModule.forRoot(),

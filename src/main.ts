@@ -8,6 +8,10 @@ async function bootstrap() {
     AppModule,
     {
       transport: Transport.TCP,
+      options: {
+        host: 'localhost',
+        port: 3031,
+      },
     },
   );
   app.useGlobalPipes(

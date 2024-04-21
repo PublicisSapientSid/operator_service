@@ -6,11 +6,6 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "docker:build": "docker build -t operator_service .",
-    "docker:run": "docker run -d -p 3000:3000 operator_service",
-    "docker:up": "docker compose up -d",
-    "docker:down": "docker compose down",
-    "docker:log": "docker compose logs -f",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
