@@ -6,6 +6,8 @@ import { CreateUserDto } from '../dto/CreateUser.dto';
 import { UpdateUserDto } from '../dto/UpdateUser.dto';
 import { AuthService } from '../auth/auth.service';
 import { AuthDTO } from '../dto/Auth.dto';
+import { Hotel } from '../schemas/hotel.schema';
+import { CreateHotelDTO } from '../dto/CreateHotel.dto';
 
 @Injectable()
 export class UsersService {
@@ -61,9 +63,14 @@ export class UsersService {
     if (!foundUser) {
       throw new HttpException('User not found', 404);
     }
+    if (user.hotels) {
+      user.hotels = foundUser.hotels.concat(
+        user.hotels as unknown as Hotel,
+      ) as unknown as CreateHotelDTO[];
+    }
     if (user.password)
       user.password = await this.authService.createPasswordHash(user.password);
-    user.isAdmin = user.role === 'admin';
+    if (user.role) user.isAdmin = user.role === 'admin';
     return this.userModel.findByIdAndUpdate(id, user, { new: true });
   }
 
