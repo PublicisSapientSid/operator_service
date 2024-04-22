@@ -31,7 +31,7 @@ export class User {
   @Prop({ enum: [ADMIN_ROLE, MANAGER_ROLE, STAFF_ROLE], default: 'staff' })
   role: string;
 
-  @Prop({ type: [Hotel], ref: 'Hotel' })
+  @Prop({ type: [Hotel] })
   hotels: Hotel[];
 
   @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Airline' })
