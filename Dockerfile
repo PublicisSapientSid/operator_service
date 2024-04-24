@@ -1,5 +1,5 @@
 # Use the official Node.js 16 image as the base image
-FROM node:alpine
+FROM node:20-alpine
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
@@ -13,8 +13,14 @@ RUN npm ci
 # Copy everything to the container
 COPY . .
 
+# Build your Nest.js application
+RUN npm run build
+
+# Remove the source folder
+RUN rm -rf ./src
+
 # Expose the port your Nest.js application is listening on
-EXPOSE 3000
+EXPOSE 3031
 
 # Command to start your Nest.js application
-CMD [ "npm", "run", "start:dev" ]
+CMD [ "npm", "run", "start:prod" ]

@@ -14,13 +14,21 @@ export class UserAuthStrategy extends PassportStrategy(Strategy, 'user-auth') {
     @InjectModel(User.name) private userModel: Model<User>,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request) => {
+          const token = request?.authorization;
+          return token.split('Bearer ')[1];
+        },
+      ]),
       secretOrKey: config.get('JWT_SECRET'),
       passReqToCallback: true,
     });
   }
 
-  async validate(req: Request, payload: { sub: string; email: string }) {
-    if (payload.sub === req.params.id) return payload;
+  async validate(
+    req: Request & { userID: string },
+    payload: { sub: string; email: string },
+  ) {
+    if (payload.sub === req.userID) return payload;
   }
 }

@@ -7,6 +7,7 @@ import {
   MANAGER_ROLE,
   STAFF_ROLE,
 } from '../utils/constants';
+import { Hotel } from './hotel.schema';
 
 @Schema({
   timestamps: true,
@@ -30,8 +31,8 @@ export class User {
   @Prop({ enum: [ADMIN_ROLE, MANAGER_ROLE, STAFF_ROLE], default: 'staff' })
   role: string;
 
-  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Hotel' })
-  hotels: string[];
+  @Prop({ type: [Hotel] })
+  hotels: Hotel[];
 
   @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Airline' })
   airlines: string[];

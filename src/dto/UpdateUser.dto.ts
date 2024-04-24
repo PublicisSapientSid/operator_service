@@ -6,6 +6,7 @@ import {
   MANAGER_ROLE,
   STAFF_ROLE,
 } from '../utils/constants';
+import { CreateHotelDTO } from './CreateHotel.dto';
 
 export class UpdateUserDto {
   @IsOptional()
@@ -28,4 +29,7 @@ export class UpdateUserDto {
   @IsIn([ADMIN_ROLE, MANAGER_ROLE, STAFF_ROLE])
   @IsOptional()
   role?: string;
+
+  @IsOptional()
+  hotels?: CreateHotelDTO[];
 }
